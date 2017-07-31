@@ -1,3 +1,13 @@
+import copy
+
+from utility import (BLACK_INDEX, WHITE_INDEX, BLACK_BAR_INDEX,
+                     WHITE_BAR_INDEX, BLACK_OFF_INDEX, WHITE_OFF_INDEX,
+                     get_blank_board, get_initial_board, black_wins,
+                     white_wins, is_valid_board, roll_dice, 
+                     black_can_bear_off, white_can_bear_off, 
+                     black_position_is_outer, white_position_is_outer)
+
+
 def _get_all_boards_black(board, roll):
     if board[BLACK_BAR_INDEX][BLACK_INDEX] > 0:
         new_board = list(copy.deepcopy(board))

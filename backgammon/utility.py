@@ -11,13 +11,13 @@ def get_blank_board():
     """
     See README for explanation of the board data structure.
     """
-    return ((0,0), (0,0), (0,0), (0,0), (0,0), (0,0), (0,0), (0,0), (0,0),
+    return [(0,0), (0,0), (0,0), (0,0), (0,0), (0,0), (0,0), (0,0), (0,0),
             (0,0), (0,0), (0,0), (0,0), (0,0), (0,0), (0,0), (0,0), (0,0),
             (0,0), (0,0), (0,0), (0,0), (0,0), (0,0), (0,0), (0,0), (0,0),
-            (0,0))
+            (0,0)]
 
 def get_initial_board():
-    board = list(get_blank_board())
+    board = get_blank_board()
     board[0]  = (0, 2)
     board[5]  = (5, 0)
     board[7]  = (3, 0)
@@ -26,7 +26,7 @@ def get_initial_board():
     board[16]  = (0, 3)
     board[18]  = (0, 5)
     board[23]  = (2, 0)
-    return tuple(board)
+    return board
 
 def black_wins(board):
     return board[BLACK_OFF_INDEX] == (15, 0)
@@ -35,18 +35,16 @@ def white_wins(board):
     return board[WHITE_OFF_INDEX] == (0, 15)
 
 def is_valid_board(board):
-    # count total whites
-    assert sum(position[0] for position in board) == 15
-    # count total blacks
-    assert sum(position[1] for position in board) == 15
+    assert sum(position[WHITE_INDEX] for position in board) == 15
+    assert sum(position[BLACK_INDEX] for position in board) == 15
     assert board[BLACK_BAR_INDEX][WHITE_INDEX] == 0
     assert board[WHITE_BAR_INDEX][BLACK_INDEX] == 0
     assert board[BLACK_OFF_INDEX][WHITE_INDEX] == 0
     assert board[WHITE_OFF_INDEX][BLACK_INDEX] == 0
     for position in board:
-        assert position[0] >= 0
-        assert position[1] >= 0
-        if position[0] > 0 and position[1] > 0:
+        assert position[WHITE_INDEX] >= 0
+        assert position[BLACK_INDEX] >= 0
+        if position[WHITE_INDEX] > 0 and position[BLACK_INDEX] > 0:
             return False
     return True
 
@@ -61,20 +59,7 @@ def roll_dice():
         return [dice1, dice1, dice1, dice1]
     return [dice1, dice2]
 
-def black_can_bear_off(board):
-    """
-    Black can only bear off if all pieces are in the upper right quadrant.
-    """
-    black_count = board[5][BLACK_INDEX]
-    black_count += board[4][BLACK_INDEX]
-    black_count += board[3][BLACK_INDEX]
-    black_count += board[2][BLACK_INDEX]
-    black_count += board[1][BLACK_INDEX]
-    black_count += board[0][BLACK_INDEX]
-    black_count += board[BLACK_OFF_INDEX][BLACK_INDEX]
-    return black_count == 15
-
-def white_can_bear_off(board):
+def can_bear_off(board):
     """
     White can only bear off if all pieces are in the bottom right quadrant.
     """
@@ -87,23 +72,7 @@ def white_can_bear_off(board):
     white_count += board[WHITE_OFF_INDEX][WHITE_INDEX]
     return white_count == 15
 
-def black_position_is_outer(board, position):
-    """
-    Returns boolean indicating whether <position> on the <board> is the most
-    exterme point containing black pieces (i.e. furthest from the black home).
-    """
-    if board[position][BLACK_INDEX] == 0:
-        return False
-    if board[BLACK_BAR_INDEX][BLACK_INDEX] > 0:
-        return False
-    for i in range(position+1, len(board)):
-        if i == BLACK_OFF_INDEX:
-            continue
-        if board[i][BLACK_INDEX] > 0:
-            return False
-    return True
-
-def white_position_is_outer(board, position):
+def position_is_outer(board, position):
     """
     Returns boolean indicating whether <position> on the <board> is the most
     exterme point containing white pieces (i.e. furthest from the white home).

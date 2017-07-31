@@ -8,6 +8,45 @@ from utility import (BLACK_INDEX, WHITE_INDEX, BLACK_BAR_INDEX,
                      black_position_is_outer, white_position_is_outer)
 
 
+def generate_next_boards(board, is_black_turn, rolls):
+    final_boards = []
+    search_stack = []
+    # [board, rolls, rolls_used]
+    search_stack.append([tuple(copy.deepcopy(board)), copy.deepcopy(rolls), []])
+    while search_stack:
+        board, rolls, used_rolls = search_stack.pop()
+        if not rolls:
+            final_boards.append((board, tuple(used_rolls)))
+            continue
+        for i, roll in enumerate(rolls):
+            if is_black_turn:
+                next_boards = _get_all_boards_black(board, roll)
+            else:
+                next_boards = _get_all_boards_white(board, roll)
+            if not next_boards:
+                next_rolls = copy.deepcopy(rolls)
+                next_rolls.pop(i)
+                search_stack.append((board, next_rolls, used_rolls))
+            for next_board in next_boards:
+                next_rolls = copy.deepcopy(rolls)
+                tmp_used_rolls = copy.deepcopy(used_rolls)
+                tmp_used_rolls.append(next_rolls.pop(i))
+                search_stack.append((next_board, next_rolls, tmp_used_rolls))
+            if len(set(rolls)) == 1: # optimize for doubles
+                break
+    max_moves = max(len(used_rolls) for (board, used_rolls) in final_boards)
+    filtered_final_boards = [(board, used_rolls)
+                             for (board, used_rolls) in final_boards
+                             if len(used_rolls) == max_moves]
+    if max_moves == 1:
+        max_roll = max(max(used_rolls)
+                       for (board, used_rolls)
+                       in filtered_final_boards)
+        filtered_final_boards = [(board, used_rolls)
+                                 for (board, used_rolls) in filtered_final_boards
+                                 if max(used_rolls) == max_roll]
+    return list(set([board for (board, used_rolls) in filtered_final_boards]))
+
 def _get_all_boards_black(board, roll):
     if board[BLACK_BAR_INDEX][BLACK_INDEX] > 0:
         new_board = list(copy.deepcopy(board))
@@ -91,45 +130,5 @@ def _get_all_boards_white(board, roll):
         if is_valid_board(new_board):
             all_boards.append(new_board)
     return all_boards
-
-def generate_next_boards(board, is_black_turn, rolls):
-    final_boards = []
-    search_stack = []
-    # [board, rolls, rolls_used]
-    search_stack.append([tuple(copy.deepcopy(board)), copy.deepcopy(rolls), []])
-    while search_stack:
-        board, rolls, used_rolls = search_stack.pop()
-        if not rolls:
-            final_boards.append((board, tuple(used_rolls)))
-            continue
-        for i, roll in enumerate(rolls):
-            if is_black_turn:
-                next_boards = _get_all_boards_black(board, roll)
-            else:
-                next_boards = _get_all_boards_white(board, roll)
-            if not next_boards:
-                next_rolls = copy.deepcopy(rolls)
-                next_rolls.pop(i)
-                search_stack.append((board, next_rolls, used_rolls))
-            for next_board in next_boards:
-                next_rolls = copy.deepcopy(rolls)
-                tmp_used_rolls = copy.deepcopy(used_rolls)
-                tmp_used_rolls.append(next_rolls.pop(i))
-                search_stack.append((next_board, next_rolls, tmp_used_rolls))
-            if len(set(rolls)) == 1: # optimize for doubles
-                break
-    max_moves = max(len(used_rolls) for (board, used_rolls) in final_boards)
-    filtered_final_boards = [(board, used_rolls)
-                             for (board, used_rolls) in final_boards
-                             if len(used_rolls) == max_moves]
-    if max_moves == 1:
-        max_roll = max(max(used_rolls)
-                       for (board, used_rolls)
-                       in filtered_final_boards)
-        filtered_final_boards = [(board, used_rolls)
-                                 for (board, used_rolls) in filtered_final_boards
-                                 if max(used_rolls) == max_roll]
-    return list(set([board for (board, used_rolls) in filtered_final_boards]))
-
 
 

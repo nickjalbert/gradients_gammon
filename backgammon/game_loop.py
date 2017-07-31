@@ -22,6 +22,7 @@ def do_white_turn(board):
         print '{}.'.format(i)
         visualize_board(next_board)
     print
+    print 'Current board:'
     visualize_board(board)
     print 'White rolls {}'.format(roll)
     choice = raw_input("Move? ")

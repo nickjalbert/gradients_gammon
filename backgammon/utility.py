@@ -117,3 +117,29 @@ def white_position_is_outer(board, position):
             return False
     return True
 
+def swap_colors(board):
+    """
+    Returns a new board in which white is in an identical position to black on
+    the old board (and vice versa).
+    """
+    def _in_place_swap(board, i, j):
+        tmp0, tmp1 = board[i]
+        board[i] = (board[j][1], board[j][0])
+        board[j] = (tmp1, tmp0)
+    board = board[:]
+    _in_place_swap(board, 0, 23)
+    _in_place_swap(board, 1, 22)
+    _in_place_swap(board, 2, 21)
+    _in_place_swap(board, 3, 20)
+    _in_place_swap(board, 4, 19)
+    _in_place_swap(board, 5, 18)
+    _in_place_swap(board, 6, 17)
+    _in_place_swap(board, 7, 16)
+    _in_place_swap(board, 8, 15)
+    _in_place_swap(board, 9, 14)
+    _in_place_swap(board, 10, 13)
+    _in_place_swap(board, 11, 12)
+    _in_place_swap(board, BLACK_BAR_INDEX, WHITE_BAR_INDEX)
+    _in_place_swap(board, BLACK_OFF_INDEX, WHITE_OFF_INDEX)
+    return board
+

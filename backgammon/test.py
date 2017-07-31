@@ -5,7 +5,8 @@ from utility import (BLACK_INDEX, WHITE_INDEX, BLACK_BAR_INDEX,
                      get_blank_board, get_initial_board, black_wins,
                      white_wins, is_valid_board, roll_dice,
                      black_can_bear_off, white_can_bear_off,
-                     black_position_is_outer, white_position_is_outer)
+                     black_position_is_outer, white_position_is_outer,
+                     swap_colors)
 from boards import generate_next_boards
 
 
@@ -273,6 +274,45 @@ class TestBackgammonRules(unittest.TestCase):
         board[BLACK_BAR_INDEX] = (1,0)
         board = tuple(board)
         self.assertIn(board, next_boards)
+
+    def test_swap_colors(self):
+        board = list(get_initial_board())
+        board[0] = (0,0)
+        board[1] = (1,0)
+        board[5] = (4,0)
+        board[WHITE_BAR_INDEX] = (0,2)
+        board[23] = (0,0)
+        board[BLACK_OFF_INDEX] = (2,0)
+        self.assertTrue(is_valid_board(board))
+        board = swap_colors(board)
+        self.assertEqual(board[0], (0,0))
+        self.assertEqual(board[1], (0,0))
+        self.assertEqual(board[2], (0,0))
+        self.assertEqual(board[3], (0,0))
+        self.assertEqual(board[4], (0,0))
+        self.assertEqual(board[5], (5,0))
+        self.assertEqual(board[6], (0,0))
+        self.assertEqual(board[7], (3,0))
+        self.assertEqual(board[8], (0,0))
+        self.assertEqual(board[9], (0,0))
+        self.assertEqual(board[10], (0,0))
+        self.assertEqual(board[11], (0,5))
+        self.assertEqual(board[12], (5,0))
+        self.assertEqual(board[13], (0,0))
+        self.assertEqual(board[14], (0,0))
+        self.assertEqual(board[15], (0,0))
+        self.assertEqual(board[16], (0,3))
+        self.assertEqual(board[17], (0,0))
+        self.assertEqual(board[18], (0,4))
+        self.assertEqual(board[19], (0,0))
+        self.assertEqual(board[20], (0,0))
+        self.assertEqual(board[21], (0,0))
+        self.assertEqual(board[22], (0,1))
+        self.assertEqual(board[23], (0,0))
+        self.assertEqual(board[WHITE_BAR_INDEX], (0,0))
+        self.assertEqual(board[BLACK_BAR_INDEX], (2,0))
+        self.assertEqual(board[WHITE_OFF_INDEX], (0,2))
+        self.assertEqual(board[BLACK_OFF_INDEX], (0,0))
 
 
 if __name__ == '__main__':

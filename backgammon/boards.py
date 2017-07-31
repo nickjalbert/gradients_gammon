@@ -9,7 +9,7 @@ from utility import (BLACK_INDEX, WHITE_INDEX, BLACK_BAR_INDEX,
 
 def generate_next_boards(board, is_black_turn, rolls):
     """ 
-    Returns a list of all legal board transitions given the initial
+    Returns a list of all legal next boards given the initial
     <board> and a list of rolls.
     """
     if is_black_turn:

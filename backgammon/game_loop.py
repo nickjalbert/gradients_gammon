@@ -7,10 +7,14 @@ from visualize import visualize_board
 def do_black_turn(board):
     roll = roll_dice()
     next_boards = generate_next_boards(board, True, roll)
+    print '--------------'
+    print 
     print 'Black rolls {}'.format(roll)
+    print
+    print 'Current board:'
     next_board = random.choice(next_boards)
     visualize_board(next_board)
-    raw_input()
+    raw_input('Press any key...')
     print
     return next_board, (black_wins(next_board) or white_wins(next_board))
 
@@ -22,17 +26,20 @@ def do_white_turn(board):
         print '{}.'.format(i)
         visualize_board(next_board)
     print
+    print '--------------'
+    print
+    print 'White rolls {}'.format(roll)
+    print 
     print 'Current board:'
     visualize_board(board)
-    print 'White rolls {}'.format(roll)
-    choice = raw_input("Move? ")
+    choice = raw_input("Enter move (see choices above): ")
     if choice:
         try:
             choice = int(choice)
         except ValueError:
             choice = None
 
-    if choice and 0 <= choice < len(next_boards):
+    if choice is not None and 0 <= choice < len(next_boards):
         next_board = next_boards[choice]
     else:
         next_board = random.choice(next_boards)

@@ -7,16 +7,19 @@
 
 ### Tour
 
-The goal of this subproject is to enumerate all legal next states given a
-backgammon board, dice roll, and player's turn.  This is accomplished in 
-```boards.py``` by the ```generate_all_boards``` method.
+This subproject enumerates all legal next states given a backgammon board, dice
+roll, and player's turn.  This is accomplished in ```boards.py``` by the
+```generate_all_boards``` method.
 
 Example of usage:
 
 ```python
 from boards import generate_next_boards
 from utility import get_initial_board
-next_boards = generate_next_boards(get_initial_board(), False, [3,1])
+board = get_initial_board()
+is_black_turn = False
+roll = [3,1]
+next_boards = generate_next_boards(board, is_black_turn, roll)
 ```
 
 You can use ASCII to visualize a backgammon board as follows:
@@ -71,6 +74,13 @@ Illustration of the list indices and their correspondence to the board:
  |  _  _  _  _  _  _  |   |  _  _  _  _  _  _  | White Bar: 25
  |  .  .  .  .  .  .  |   |  .  .  .  .  .  .  |
 ```
+
+### State Enumeration
+
+To enumerate all legal next states, we apply each dice roll one at a time to
+each point on the board in ```generate_next_boards```.  The generation
+strategy could be better optimized to prune equivalent subtrees from the
+generation space.
 
 ### Test
 ```

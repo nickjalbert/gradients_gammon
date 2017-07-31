@@ -13,7 +13,7 @@ backgammon board, dice roll, and player's turn.  This is accomplished in
 
 Example of usage:
 
-```
+```python
 from boards import generate_next_boards
 from utility import get_initial_board
 next_boards = generate_next_boards(get_initial_board(), False, [3,1])
@@ -21,7 +21,7 @@ next_boards = generate_next_boards(get_initial_board(), False, [3,1])
 
 You can use ASCII to visualize a backgammon board as follows:
 
-```
+```python
 from visualize import visualize_board
 visualize_board(next_boards[0])
 ```

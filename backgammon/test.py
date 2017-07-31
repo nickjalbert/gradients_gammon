@@ -1,9 +1,11 @@
 import unittest
-from utility import (is_valid_board, get_blank_board, white_wins, 
-                     black_wins, get_initial_board, roll_dice, 
+from utility import (BLACK_INDEX, WHITE_INDEX, BLACK_BAR_INDEX,
+                     WHITE_BAR_INDEX, BLACK_OFF_INDEX, WHITE_OFF_INDEX,
+                     get_blank_board, get_initial_board, black_wins,
+                     white_wins, is_valid_board, roll_dice, 
                      black_can_bear_off, white_can_bear_off, 
-                     black_position_is_outer, white_position_is_outer,
-                     BLACK_OFF_INDEX, WHITE_OFF_INDEX)
+                     black_position_is_outer, white_position_is_outer)
+                     
 
 class TestUtilities(unittest.TestCase):
     def test_get_blank_board(self):

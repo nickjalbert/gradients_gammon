@@ -38,6 +38,10 @@ Illustration of the list indices and their correspondence to the board:
  |  .  .  .  .  .  .  |   |  .  .  .  .  .  .  |
 ```
 
+### Test
+```
+python test.py
+```
 
 ### Bugs
 

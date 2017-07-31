@@ -1,5 +1,9 @@
 ### Backgammon
 
+### Requirements
+
+* Plain old Python 2.7
+
 ### Commands
 
 * Run a game loop: ```python game_loop.py```

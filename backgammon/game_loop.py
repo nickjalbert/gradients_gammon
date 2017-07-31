@@ -17,13 +17,14 @@ def do_black_turn(board):
 def do_white_turn(board):
     roll = roll_dice()
     next_boards = generate_next_boards(board, False, roll)
-    print 'White rolls {}'.format(roll)
     for i, next_board in enumerate(next_boards):
         print
         print '{}.'.format(i)
         visualize_board(next_board)
-
-    choice = raw_input()
+    print
+    visualize_board(board)
+    print 'White rolls {}'.format(roll)
+    choice = raw_input("Move? ")
     if choice:
         try:
             choice = int(choice)

@@ -3,8 +3,8 @@ import copy
 from utility import (BLACK_INDEX, WHITE_INDEX, BLACK_BAR_INDEX,
                      WHITE_BAR_INDEX, BLACK_OFF_INDEX, WHITE_OFF_INDEX,
                      get_blank_board, get_initial_board, black_wins,
-                     white_wins, is_valid_board, roll_dice, 
-                     black_can_bear_off, white_can_bear_off, 
+                     white_wins, is_valid_board, roll_dice,
+                     black_can_bear_off, white_can_bear_off,
                      black_position_is_outer, white_position_is_outer)
 
 
@@ -35,7 +35,7 @@ def _get_all_boards_black(board, roll):
             target = BLACK_OFF_INDEX
         if target == -1 and black_can_bear_off(board):
             target = BLACK_OFF_INDEX
-        if target < 0: 
+        if target < 0:
             continue
         new_board = list(copy.deepcopy(board))
         new_board[position] = (black_count-1, white_count)
@@ -120,11 +120,11 @@ def generate_next_boards(board, is_black_turn, rolls):
                 break
     max_moves = max(len(used_rolls) for (board, used_rolls) in final_boards)
     filtered_final_boards = [(board, used_rolls)
-                             for (board, used_rolls) in final_boards 
+                             for (board, used_rolls) in final_boards
                              if len(used_rolls) == max_moves]
     if max_moves == 1:
-        max_roll = max(max(used_rolls) 
-                       for (board, used_rolls) 
+        max_roll = max(max(used_rolls)
+                       for (board, used_rolls)
                        in filtered_final_boards)
         filtered_final_boards = [(board, used_rolls)
                                  for (board, used_rolls) in filtered_final_boards

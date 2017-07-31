@@ -1,5 +1,8 @@
 import random
-from utility import get_initial_board
+
+from utility import get_initial_board, roll_dice, black_wins, white_wins
+from boards import generate_next_boards
+from visualize import visualize_board
 
 def do_black_turn(board):
     roll = roll_dice()
@@ -31,7 +34,7 @@ def do_white_turn(board):
         next_board = next_boards[choice]
     else:
         next_board = random.choice(next_boards)
-    print 
+    print
     print
     visualize_board(next_board)
     print

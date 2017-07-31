@@ -1,5 +1,10 @@
 ### Backgammon
 
+### Commands
+
+* Run a game loop: ```python game_loop.py```
+* Run the tests: ```python test.py```
+
 ### Board Representation
 
 We represent the backgammon board as a 28 element list of 2-tuples.  List

@@ -1,7 +1,7 @@
 from utility import (BLACK_INDEX, WHITE_INDEX, BLACK_BAR_INDEX,
                      WHITE_BAR_INDEX, BLACK_OFF_INDEX, WHITE_OFF_INDEX,
                      is_valid_board)
- 
+
 
 def visualize_board(board):
     """Prints ASCII visualization of the <board>."""

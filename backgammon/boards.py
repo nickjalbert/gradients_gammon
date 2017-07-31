@@ -46,7 +46,6 @@ def generate_next_boards(board, is_black_turn, rolls):
         final_boards = [swap_colors(board) for board in final_boards]
     return final_boards
 
-
 def _choose_maximal_moves(final_boards):
     """
     Filters out illegal transitions that are disallowed because they do not
@@ -101,6 +100,9 @@ def _get_all_boards(board, roll):
     return all_boards
 
 def _handle_bar_pieces(board, roll):
+    """
+    Moves pieces off the bar.
+    """
     target_index = -1 + roll
     board = _move_to_board_position(board, WHITE_BAR_INDEX, target_index)
     if is_valid_board(board):
@@ -119,4 +121,3 @@ def _move_to_board_position(board, start, end):
     else:
         board[end] = (black_end_count, white_end_count + 1)
     return board
-

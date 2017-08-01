@@ -271,6 +271,9 @@ class DumbNeuralNetMover(NeuralNetMover):
         self.assert_moves_were_tracked()
         self.reset_move_tracking()
 
+    def save_state(self, path):
+        pass
+
 
 if __name__ == '__main__':
     print NeuralNetMover().softmax_choose([33, 4, 1, 13])

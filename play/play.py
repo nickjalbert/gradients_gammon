@@ -1,11 +1,17 @@
-import random
+import os
 import time
+import random
 
 from learn.random_mover import RandomMover
 from learn.neural_net import NeuralNetMover
 from backgammon.boards import generate_next_boards
 from backgammon.utility import (get_initial_board, roll_dice, black_wins, 
                                 white_wins)
+
+BLACK_SAVE_PATH = 'black_save_state.pkl'
+BLACK_LOAD_PATH = 'black_load_me.pkl'
+WHITE_SAVE_PATH = 'white_save_state.pkl'
+WHITE_LOAD_PATH = 'white_load_me.pkl'
 
 BLACK = 'black'
 WHITE = 'white'
@@ -59,11 +65,19 @@ def play_game(black, white):
     assert not (black_won and white_won)
     black.record_outcome(black_won)
     black.learn()
+    black.save_state(BLACK_SAVE_PATH)
     white.record_outcome(black_won)
     white.learn()
+    white.save_state(WHITE_SAVE_PATH)
     return black_wins(board)
 
 if __name__ == '__main__':
     black = RandomMover()
+    if os.path.exists(BLACK_LOAD_PATH):
+        print 'Loading black saved state found in {}'.format(BLACK_LOAD_PATH)
+        black.load_state(BLACK_LOAD_PATH)
     white = NeuralNetMover()
-    play_games(2, black, white)
+    if os.path.exists(WHITE_LOAD_PATH):
+        print 'Loading white saved state found in {}'.format(WHITE_LOAD_PATH)
+        white.load_state(WHITE_LOAD_PATH)
+    play_games(10, black, white)

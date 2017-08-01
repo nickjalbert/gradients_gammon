@@ -1,5 +1,6 @@
-import random
 import math
+import random
+import pickle
 from itertools import chain
 
 from learn.basic import BaseMoveTracker, BasePlayer
@@ -243,6 +244,23 @@ class NeuralNetMover(BaseMoveTracker, BasePlayer):
                 assert output_new > output_old
             else:
                 assert output_new < output_old
+
+    def save_state(self, path):
+        serialized_self = [self.input_to_hidden_weights,
+                           self.input_to_hidden_biases,
+                           self.hidden_to_output_weights,
+                           self.hidden_to_output_bias]
+        with open(path, 'wb') as f:
+            pickle.dump(serialized_self, f)
+    
+    def load_state(self, path):
+        with open(path, 'rb') as f:
+            serialized_self = pickle.load(f)
+        self.input_to_hidden_weights = serialized_self[0] 
+        self.input_to_hidden_biases = serialized_self[1] 
+        self.hidden_to_output_weights = serialized_self[2] 
+        self.hidden_to_output_bias = serialized_self[3]
+
 
 if __name__ == '__main__':
     print NeuralNetMover().softmax_choose([33, 4, 1, 13])

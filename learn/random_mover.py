@@ -13,3 +13,9 @@ class RandomMover(BaseMoveTracker, BasePlayer):
         self.assert_moves_were_tracked()
         self.reset_move_tracking()
 
+    def save_state(self, path):
+        pass
+    
+    def load_state(self, path):
+        pass
+

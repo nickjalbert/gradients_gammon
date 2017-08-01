@@ -5,6 +5,12 @@ class BasePlayer(object):
     def learn(self):
         raise NotImplementedError('learn() not implemented')
 
+    def save_state(self, path):
+        raise NotImplementedError('save_state() not implemented')
+
+    def load_state(self, path):
+        raise NotImplementedError('load_state() not implemented')
+
 
 class BaseMoveTracker(object):
     def reset_move_tracking(self):

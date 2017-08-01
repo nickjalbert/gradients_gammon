@@ -2,6 +2,7 @@ import random
 import time
 
 from learn.random_mover import RandomMover
+from learn.neural_net import NeuralNetMover
 from backgammon.boards import generate_next_boards
 from backgammon.utility import (get_initial_board, roll_dice, black_wins, 
                                 white_wins)
@@ -53,5 +54,5 @@ def play_game(black, white):
 
 if __name__ == '__main__':
     black = RandomMover()
-    white = RandomMover()
+    white = NeuralNetMover()
     play_games(11, black, white)

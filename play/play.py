@@ -28,7 +28,7 @@ def play_games(count, black, white):
         if i % 10 == 9 or i == 0:
             elapsed_time = time.time() - start_time
             print 'Ran {0} games in {1:.2f} sec ({2:.2f} games/sec)'.format(
-                    i+1, elapsed_time, i+1/elapsed_time)
+                    i+1, elapsed_time, (i+1)/elapsed_time)
 
     print
     print 'Black wins: {0} {1:.2f}%'.format(
@@ -81,4 +81,4 @@ if __name__ == '__main__':
     if os.path.exists(WHITE_LOAD_PATH):
         print 'Loading white saved state found in {}'.format(WHITE_LOAD_PATH)
         white.load_state(WHITE_LOAD_PATH)
-    play_games(100, black, white)
+    play_games(50, black, white)

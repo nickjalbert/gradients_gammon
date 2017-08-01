@@ -150,9 +150,9 @@ class NeuralNetMover(BaseMoveTracker, BasePlayer):
         self.backpropagate_to_input(board, payoff)
         output_new = self.feed_forward(board)
         if payoff > 0 and output_new < output_old:
-            print 'BLARK'
+            print 'Warning id:1'
         elif payoff < 0 and output_new > output_old:
-            print 'BLECK'
+            print 'Warning id:2'
 
     def backpropagate_to_hidden_layer(self, board, payoff):
         # Initialize
@@ -194,10 +194,10 @@ class NeuralNetMover(BaseMoveTracker, BasePlayer):
         self.hidden_to_output_bias = bias
 
         output_new = self.feed_to_output(hidden_activations)
-        if payoff > 0: 
-            assert output_new > output
-        else:
-            assert output_new < output
+        if payoff > 0 and output_new < output:
+            print 'Warning id:3'
+        elif payoff < 0 and output_new > output:
+            print 'Warning id:4'
 
     def backpropagate_to_input(self, board, payoff):
         # Initialize
@@ -240,10 +240,10 @@ class NeuralNetMover(BaseMoveTracker, BasePlayer):
             bias += local_gradient * chain_gradient * step_size * payoff
             self.input_to_hidden_biases[neuron_index] = bias
             output_new = self.feed_to_hidden_neuron(neuron_index, board)
-            if payoff > 0:
-                assert output_new > output_old
-            else:
-                assert output_new < output_old
+            if payoff > 0 and output_new < output_old:
+                print 'Warning id:5'
+            elif payoff < 0 and output_new > output_old:
+                print 'Warning id:6'
 
     def save_state(self, path):
         serialized_self = [self.input_to_hidden_weights,

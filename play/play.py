@@ -76,8 +76,9 @@ if __name__ == '__main__':
     if os.path.exists(BLACK_LOAD_PATH):
         print 'Loading black saved state found in {}'.format(BLACK_LOAD_PATH)
         black.load_state(BLACK_LOAD_PATH)
-    white = DumbNeuralNetMover()
+    #white = DumbNeuralNetMover()
+    white = NeuralNetMover()
     if os.path.exists(WHITE_LOAD_PATH):
         print 'Loading white saved state found in {}'.format(WHITE_LOAD_PATH)
         white.load_state(WHITE_LOAD_PATH)
-    play_games(10, black, white)
+    play_games(100, black, white)

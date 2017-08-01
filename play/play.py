@@ -1,10 +1,13 @@
 import random
 import time
 
-from learn import random_mover
+from learn.random_mover import RandomMover
 from backgammon.boards import generate_next_boards
 from backgammon.utility import (get_initial_board, roll_dice, black_wins, 
                                 white_wins)
+
+BLACK = 'black'
+WHITE = 'white'
 
 def play_games(count, black, white):
     print 'Playing {} games of backgammon...'.format(count)
@@ -35,10 +38,20 @@ def play_game(black, white):
         roll = roll_dice()
         boards = generate_next_boards(board, is_black_turn, roll)
         board = black.move(boards) if is_black_turn else white.move(boards)
+        black.save_move(is_black_turn, board)
+        white.save_move(is_black_turn, board)
         is_black_turn = not is_black_turn
-    assert black_wins(board) or white_wins(board)
-    assert not (black_wins(board) and white_wins(board))
+    black_won = black_wins(board)
+    white_won = white_wins(board)
+    assert black_won or white_won
+    assert not (black_won and white_won)
+    black.record_outcome(black_won)
+    black.learn()
+    white.record_outcome(black_won)
+    white.learn()
     return black_wins(board)
 
 if __name__ == '__main__':
-    play_games(100, random_mover, random_mover)
+    black = RandomMover()
+    white = RandomMover()
+    play_games(11, black, white)

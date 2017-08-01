@@ -3,7 +3,7 @@ import time
 import random
 
 from learn.random_mover import RandomMover
-from learn.neural_net import NeuralNetMover
+from learn.neural_net import NeuralNetMover, DumbNeuralNetMover
 from backgammon.boards import generate_next_boards
 from backgammon.utility import (get_initial_board, roll_dice, black_wins, 
                                 white_wins)
@@ -76,7 +76,7 @@ if __name__ == '__main__':
     if os.path.exists(BLACK_LOAD_PATH):
         print 'Loading black saved state found in {}'.format(BLACK_LOAD_PATH)
         black.load_state(BLACK_LOAD_PATH)
-    white = NeuralNetMover()
+    white = DumbNeuralNetMover()
     if os.path.exists(WHITE_LOAD_PATH):
         print 'Loading white saved state found in {}'.format(WHITE_LOAD_PATH)
         white.load_state(WHITE_LOAD_PATH)

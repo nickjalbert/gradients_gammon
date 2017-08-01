@@ -262,6 +262,16 @@ class NeuralNetMover(BaseMoveTracker, BasePlayer):
         self.hidden_to_output_bias = serialized_self[3]
 
 
+class DumbNeuralNetMover(NeuralNetMover):
+    '''Simply applies the neural net but doesn't try to learn'''
+    def __init__(self):
+        super(DumbNeuralNetMover, self).__init__()
+
+    def learn(self):
+        self.assert_moves_were_tracked()
+        self.reset_move_tracking()
+
+
 if __name__ == '__main__':
     print NeuralNetMover().softmax_choose([33, 4, 1, 13])
 

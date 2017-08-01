@@ -81,4 +81,4 @@ if __name__ == '__main__':
     if os.path.exists(WHITE_LOAD_PATH):
         print 'Loading white saved state found in {}'.format(WHITE_LOAD_PATH)
         white.load_state(WHITE_LOAD_PATH)
-    play_games(50, black, white)
+    play_games(100, black, white)

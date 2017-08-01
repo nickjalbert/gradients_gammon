@@ -3,8 +3,8 @@ import math
 from itertools import chain
 
 from learn.basic import BaseMoveTracker, BasePlayer
+from backgammon.utility import swap_colors
 
-# TODO: convert all boards to white
 
 '''
 Questions:
@@ -63,32 +63,37 @@ class NeuralNetMover(BaseMoveTracker, BasePlayer):
         self.hidden_to_output_weights = output_weights
         self.hidden_to_output_bias = small_random()
 
-    def move(self, board_list):
-        outputs = []
-        for board in board_list:
-            hidden_activations = self.feed_to_hidden_layer(board)
-            output = self.feed_to_output(hidden_activations)
-            outputs.append(output)
-        index = self.softmax_choose(outputs)
-        return board_list[index]
+    def move(self, is_black_turn, board_list):
+        if is_black_turn:
+            board_list = [swap_colors(board) for board in board_list]
+        outputs = [self.feed_forward(board) for board in board_list]
+        return self.softmax_choose(outputs)
+
+    def feed_forward(self, board):
+        hidden_activations = self.feed_to_hidden_layer(board)
+        return self.feed_to_output(hidden_activations)
 
     @classmethod
     def sigmoid(cls, val):
         return 1.0 / (1 + math.exp(-1* val))
 
     def feed_to_hidden_layer(self, board):
-        flat_board = list(chain.from_iterable(board))
-        assert len(flat_board) == 56
         sigmoid_activations = {}
         for neuron_index in range(self.HIDDEN_LAYER_NEURONS):
-            neuron_weights = self.input_to_hidden_weights[neuron_index]
-            assert len(neuron_weights) == len(flat_board)
-            activation = 0.0
-            for i in range(len(flat_board)):
-                activation += neuron_weights[i]*flat_board[i]
-            activation += self.input_to_hidden_biases[neuron_index]
-            sigmoid_activations[neuron_index] = self.sigmoid(activation)
+            activation = self.feed_to_hidden_neuron(neuron_index, board)
+            sigmoid_activations[neuron_index] = activation
         return sigmoid_activations
+
+    def feed_to_hidden_neuron(self, neuron_index, board):
+        flat_board = list(chain.from_iterable(board))
+        assert len(flat_board) == 56
+        neuron_weights = self.input_to_hidden_weights[neuron_index]
+        assert len(neuron_weights) == len(flat_board)
+        activation = 0.0
+        for i in range(len(flat_board)):
+            activation += neuron_weights[i]*flat_board[i]
+        activation += self.input_to_hidden_biases[neuron_index]
+        return self.sigmoid(activation)
 
     def feed_to_output(self, hidden_activations):
         assert len(hidden_activations) == len(self.hidden_to_output_weights)
@@ -120,12 +125,124 @@ class NeuralNetMover(BaseMoveTracker, BasePlayer):
 
     def learn(self):
         self.assert_moves_were_tracked()
-        self.backpropagate()
+        training = self.apply_policy_gradients()
+        self.stochastic_gradient_descent(training)
         self.reset_move_tracking()
 
-    def backpropagate(self):
-        pass
+    def apply_policy_gradients(self):
+        training = []
+        self.black_moves = [swap_colors(board) for board in self.black_moves]
+        training = [(board, self.black_payoff) for board in self.black_moves]
+        training += [(board, self.white_payoff) for board in self.white_moves]
+        return training
 
+    def stochastic_gradient_descent(self, training):
+        for (board, payoff) in training:
+            self.backpropagate(board, payoff)
+
+    def backpropagate(self, board, payoff):
+        '''
+        Calculate gradients numerically.
+        '''
+        output_old = self.feed_forward(board)
+        self.backpropagate_to_hidden_layer(board, payoff)
+        self.backpropagate_to_input(board, payoff)
+        output_new = self.feed_forward(board)
+        if payoff > 0 and output_new < output_old:
+            print 'BLARK'
+        elif payoff < 0 and output_new > output_old:
+            print 'BLECK'
+
+    def backpropagate_to_hidden_layer(self, board, payoff):
+        # Initialize
+        self.hidden_to_output_weight_gradients = [0.0]
+        self.hidden_to_output_weight_gradients *= self.HIDDEN_LAYER_NEURONS
+        self.hidden_to_output_bias_gradient = 0.0
+
+        # Get hidden activations and current output
+        hidden_activations = self.feed_to_hidden_layer(board)
+        output = self.feed_to_output(hidden_activations)
+
+        # Numerically calculate the gradient for each weight wrt output
+        h = .0001
+        for neuron_index in range(self.HIDDEN_LAYER_NEURONS):
+            self.hidden_to_output_weights[neuron_index] += h
+            output_tweaked = self.feed_to_output(hidden_activations)
+            self.hidden_to_output_weights[neuron_index] -= h
+
+            gradient = (output_tweaked - output)/h
+            self.hidden_to_output_weight_gradients[neuron_index] = gradient
+
+        # Numerically calculate the gradient for the bias wrt output
+        self.hidden_to_output_bias += h
+        output_tweaked = self.feed_to_output(hidden_activations)
+        self.hidden_to_output_bias -= h
+        self.hidden_to_output_bias_gradient = (output_tweaked - output)/h
+
+        # Update weights along gradient in direction of the payoff
+        step_size = .01
+        for neuron_index in range(self.HIDDEN_LAYER_NEURONS):
+            weight = self.hidden_to_output_weights[neuron_index]
+            gradient = self.hidden_to_output_weight_gradients[neuron_index]
+            weight += step_size * gradient * payoff
+            self.hidden_to_output_weights[neuron_index] = weight
+
+        # Update bias along gradient in direction of the payoff
+        bias = self.hidden_to_output_bias
+        bias += step_size * self.hidden_to_output_bias_gradient
+        self.hidden_to_output_bias = bias
+
+        output_new = self.feed_to_output(hidden_activations)
+        if payoff > 0: 
+            assert output_new > output
+        else:
+            assert output_new < output
+
+    def backpropagate_to_input(self, board, payoff):
+        # Initialize
+        self.input_to_hidden_weight_gradients = {}
+        for neuron_index in range(self.HIDDEN_LAYER_NEURONS):
+            gradients = [0.0] * self.FLAT_BOARD_SIZE
+            self.input_to_hidden_weight_gradients[neuron_index] = gradients
+        self.input_to_hidden_bias_gradients = [0.0]*self.HIDDEN_LAYER_NEURONS
+
+        # Numerically calculate gradients for hidden layer weights and biases
+        # wrt to the hidden layer neuron's output
+        h = .0001
+        for neuron_index in range(self.HIDDEN_LAYER_NEURONS):
+            output = self.feed_to_hidden_neuron(neuron_index, board)
+            for input_index in range(self.FLAT_BOARD_SIZE):
+                self.input_to_hidden_weights[neuron_index][input_index] += h
+                output_new = self.feed_to_hidden_neuron(neuron_index, board)
+                self.input_to_hidden_weights[neuron_index][input_index] -= h
+                gradient = (output_new - output)/h
+                self.input_to_hidden_weight_gradients[neuron_index][input_index] = gradient
+            self.input_to_hidden_biases[neuron_index] += h
+            output_new = self.feed_to_hidden_neuron(neuron_index, board)
+            self.input_to_hidden_biases[neuron_index] -= h
+            gradient = (output_new - output)/h
+            self.input_to_hidden_bias_gradients[neuron_index] = gradient
+
+        # Apply chain rule to gradients to update weights and biases
+        step_size = .01
+        for neuron_index in range(self.HIDDEN_LAYER_NEURONS):
+            output_old = self.feed_to_hidden_neuron(neuron_index, board)
+            chain_gradient = self.hidden_to_output_weight_gradients[neuron_index]
+            for input_index in range(self.FLAT_BOARD_SIZE):
+                weight = self.input_to_hidden_weights[neuron_index][input_index]
+                local_gradient = self.input_to_hidden_weight_gradients[neuron_index][input_index]
+                weight += local_gradient * chain_gradient * step_size * payoff
+                self.input_to_hidden_weights[neuron_index][input_index] = weight
+
+            bias = self.input_to_hidden_biases[neuron_index]
+            local_gradient = self.input_to_hidden_bias_gradients[neuron_index]
+            bias += local_gradient * chain_gradient * step_size * payoff
+            self.input_to_hidden_biases[neuron_index] = bias
+            output_new = self.feed_to_hidden_neuron(neuron_index, board)
+            if payoff > 0:
+                assert output_new > output_old
+            else:
+                assert output_new < output_old
 
 if __name__ == '__main__':
     print NeuralNetMover().softmax_choose([33, 4, 1, 13])

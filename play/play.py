@@ -19,17 +19,24 @@ def play_games(count, black, white):
         black_won = play_game(black, white)
         black_wins += 1 if black_won else 0
         white_wins += 0 if black_won else 1
-        if i % 10 == 0:
+        if i % 10 == 9 or i == 0:
             elapsed_time = time.time() - start_time
             print 'Ran {0} games in {1:.2f} sec ({2:.2f} games/sec)'.format(
-                    i, elapsed_time, i/elapsed_time)
+                    i+1, elapsed_time, i+1/elapsed_time)
 
     print
-    print 'Black win percentage: {0:.2f}%'.format(float(black_wins)*100/count)
-    print 'White win percentage: {0:.2f}%'.format(float(white_wins)*100/count)
+    print 'Black wins: {0} {1:.2f}%'.format(
+            black_wins, float(black_wins)*100/count)
+    print 'White wins: {0} {1:.2f}%'.format(
+            black_wins, float(white_wins)*100/count)
     elapsed_time = time.time() - start_time
-    print 'Total runtime: {0:.2f} sec ({1:.2f} games/sec)'.format(
-            elapsed_time, count/elapsed_time)
+    game_rate = count/elapsed_time
+    description = "games per second"
+    if game_rate < 1.0:
+        game_rate = elapsed_time/count
+        description = "seconds per game"
+    print 'Total runtime: {0:.2f} sec ({1:.2f} {2})'.format(
+            elapsed_time, game_rate, description)
 
 
 def play_game(black, white):
@@ -38,7 +45,11 @@ def play_game(black, white):
     while not black_wins(board) and not white_wins(board):
         roll = roll_dice()
         boards = generate_next_boards(board, is_black_turn, roll)
-        board = black.move(boards) if is_black_turn else white.move(boards)
+        if is_black_turn:
+            board_index = black.move(is_black_turn, boards)
+        else: 
+            board_index = white.move(is_black_turn, boards)
+        board = boards[board_index]
         black.save_move(is_black_turn, board)
         white.save_move(is_black_turn, board)
         is_black_turn = not is_black_turn
@@ -55,4 +66,4 @@ def play_game(black, white):
 if __name__ == '__main__':
     black = RandomMover()
     white = NeuralNetMover()
-    play_games(11, black, white)
+    play_games(2, black, white)

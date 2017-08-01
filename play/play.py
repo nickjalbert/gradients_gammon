@@ -34,7 +34,7 @@ def play_games(count, black, white):
     print 'Black wins: {0} {1:.2f}%'.format(
             black_wins, float(black_wins)*100/count)
     print 'White wins: {0} {1:.2f}%'.format(
-            black_wins, float(white_wins)*100/count)
+            white_wins, float(white_wins)*100/count)
     elapsed_time = time.time() - start_time
     game_rate = count/elapsed_time
     description = "games per second"

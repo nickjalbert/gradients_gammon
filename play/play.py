@@ -26,28 +26,32 @@ def play_games(count, black, white):
         black_wins += 1 if black_won else 0
         white_wins += 0 if black_won else 1
         if i % 100 == 99:
-            black.save_state(BLACK_SAVE_PATH.format(i+1))
-            white.save_state(WHITE_SAVE_PATH.format(i+1))
+            black.save_state(BLACK_SAVE_PATH.format(i+401))
+            white.save_state(WHITE_SAVE_PATH.format(i+401))
         if i % 10 == 9 or i == 0:
             elapsed_time = time.time() - start_time
-            print 'Ran {0} games in {1:.2f} sec ({2:.2f} games/sec)'.format(
-                    i+1, elapsed_time, (i+1)/elapsed_time)
+            report_game_rate(i+1, elapsed_time)
+    elapsed_time = time.time() - start_time
+    report_game_rate(count, elapsed_time)
+    report_win_results(black_wins, white_wins)
+    return black_wins
 
-    print
-    print 'Black wins: {0} ({1:.2f}%)'.format(
+def report_win_results(black_wins, white_wins):
+    count = black_wins + white_wins
+    print '\nBlack wins: {0} ({1:.2f}%)'.format(
             black_wins, float(black_wins)*100/count)
     print 'White wins: {0} ({1:.2f}%)'.format(
             white_wins, float(white_wins)*100/count)
-    elapsed_time = time.time() - start_time
-    game_rate = count/elapsed_time
+
+def report_game_rate(games, elapsed):
+    game_rate = games/elapsed
     description = "games per second"
     if game_rate < 1.0:
-        game_rate = elapsed_time/count
+        game_rate = elapsed/games
         description = "seconds per game"
-    print 'Total runtime: {0:.2f} sec ({1:.2f} {2})'.format(
-            elapsed_time, game_rate, description)
-    return black_wins
-
+    print '\nRan {0} games in {1:.2f} sec ({2:.2f} {3})'.format(
+            games, elapsed, game_rate, description)
+ 
 def play_game(black, white):
     is_black_turn = random.choice([True, False])
     board = get_initial_board()
@@ -71,6 +75,16 @@ def play_game(black, white):
     white.record_outcome(black_won)
     white.learn()
     return black_wins(board)
+
+def report_confidence_interval(games, wins, protag_desc, antag_desc):
+    Z = 2.5759
+    E = Z/(2*(games)**.5)
+    observed_wins = float(wins)/games
+    win_floor = max(0.0, observed_wins - E)
+    win_ceil = min(1.0, observed_wins + E)
+    print ('99% chance that the true win percentage of {0} against {1} is '
+           'in interval [{2:.4f}, {3:.4f}]').format(
+                   protag_desc, antag_desc, win_floor, win_ceil)
 
 if __name__ == '__main__':
     black = RandomMover()

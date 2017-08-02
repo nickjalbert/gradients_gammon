@@ -8,7 +8,7 @@ import sys
 
 from learn.random_mover import RandomMover
 from learn.neural_net import DumbNeuralNetMover
-from play import play_games
+from play import play_games, report_confidence_interval
 
 
 if __name__ == '__main__':
@@ -24,12 +24,12 @@ if __name__ == '__main__':
     else:
         print 'Pickle file not found...'
         sys.exit(0)
-    total_games = 1024
+    #total_games = 1024
+    total_games = 10
     black_wins = play_games(total_games, black, white)
-    Z = 2.5759
-    E = Z/(2*(total_games)**.5)
-    observed_wins = float(total_games - black_wins)/total_games
-    win_floor = max(0.0, observed_wins - E)
-    win_ceil = min(1.0, observed_wins + E)
-    print '99% chance that the true win percentage of the NN against a random mover is in interval [{0:.4f}, {1:.4f}]'.format(win_floor, win_ceil)
+    white_wins = total_games - black_wins
+    nn_desc = 'the NN Mover ({})'.format(load_path)
+    random_desc = 'the Random Mover'
+    report_confidence_interval(total_games, white_wins, nn_desc, random_desc)
+
 

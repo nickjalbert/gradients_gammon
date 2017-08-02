@@ -8,9 +8,9 @@ from backgammon.boards import generate_next_boards
 from backgammon.utility import (get_initial_board, roll_dice, black_wins, 
                                 white_wins)
 
-BLACK_SAVE_PATH = 'black_save_state.pkl'
+BLACK_SAVE_PATH = 'data/black_save_state_{}.pkl'
 BLACK_LOAD_PATH = 'black_load_me.pkl'
-WHITE_SAVE_PATH = 'white_save_state.pkl'
+WHITE_SAVE_PATH = 'data/white_save_state_{}.pkl'
 WHITE_LOAD_PATH = 'white_load_me.pkl'
 
 BLACK = 'black'
@@ -25,6 +25,9 @@ def play_games(count, black, white):
         black_won = play_game(black, white)
         black_wins += 1 if black_won else 0
         white_wins += 0 if black_won else 1
+        if i % 100 == 99:
+            black.save_state(BLACK_SAVE_PATH.format(i+1))
+            white.save_state(WHITE_SAVE_PATH.format(i+1))
         if i % 10 == 9 or i == 0:
             elapsed_time = time.time() - start_time
             print 'Ran {0} games in {1:.2f} sec ({2:.2f} games/sec)'.format(
@@ -44,7 +47,6 @@ def play_games(count, black, white):
     print 'Total runtime: {0:.2f} sec ({1:.2f} {2})'.format(
             elapsed_time, game_rate, description)
     return black_wins
-
 
 def play_game(black, white):
     is_black_turn = random.choice([True, False])
@@ -66,10 +68,8 @@ def play_game(black, white):
     assert not (black_won and white_won)
     black.record_outcome(black_won)
     black.learn()
-    black.save_state(BLACK_SAVE_PATH)
     white.record_outcome(black_won)
     white.learn()
-    white.save_state(WHITE_SAVE_PATH)
     return black_wins(board)
 
 if __name__ == '__main__':
@@ -77,9 +77,8 @@ if __name__ == '__main__':
     if os.path.exists(BLACK_LOAD_PATH):
         print 'Loading black saved state found in {}'.format(BLACK_LOAD_PATH)
         black.load_state(BLACK_LOAD_PATH)
-    #white = DumbNeuralNetMover()
     white = NeuralNetMover()
     if os.path.exists(WHITE_LOAD_PATH):
         print 'Loading white saved state found in {}'.format(WHITE_LOAD_PATH)
         white.load_state(WHITE_LOAD_PATH)
-    play_games(100, black, white)
+    play_games(10000, black, white)

@@ -13,12 +13,12 @@ from backgammon.utility import swap_colors
 
 '''
 Questions:
-    
-    * Does it make sense to use softmax over the activation of each 
+
+    * Does it make sense to use softmax over the activation of each
       boards in the list of legal next boards? Especially if we will only
       push the gradient back against the one board we selected.
 
-    * Does it make sense to take the log of the activations to squash the 
+    * Does it make sense to take the log of the activations to squash the
       range before softmax?  No, unnecessary if we're using a sigmoid output
       neuron.
 
@@ -30,15 +30,14 @@ Questions:
 
 class NeuralNetMover(BaseMoveTracker, BasePlayer):
     '''
-    Fully connected with one hidden layer.  
-        
-        * Input layer: 56 non-negative integers.  
+    Fully connected with one hidden layer.
+
+        * Input layer: 56 non-negative integers.
         * Hidden layer: 56 fully connected neurons with a sigmoid activiation
         * Output is a single sigmoid neuron
 
     In general, we use this network as follows:
         * We run a list of legal next board states through the network
-        * We log() the activation of each board state
         * We softmax the activations
         * We choose a next board state by rolling a die biased by the softmax
 
@@ -47,7 +46,7 @@ class NeuralNetMover(BaseMoveTracker, BasePlayer):
           respond with greater activation.
         * For each board along the losing rollout, we train the network to
           respond with weaker activation.
-    
+
     Uses numerical gradients which will be inefficient but (hopefully)
     explicit.
 
@@ -274,13 +273,13 @@ class NeuralNetMover(BaseMoveTracker, BasePlayer):
                            self.hidden_to_output_bias]
         with open(path, 'wb') as f:
             pickle.dump(serialized_self, f)
-    
+
     def load_state(self, path):
         with open(path, 'rb') as f:
             serialized_self = pickle.load(f)
-        self.input_to_hidden_weights = serialized_self[0] 
-        self.input_to_hidden_biases = serialized_self[1] 
-        self.hidden_to_output_weights = serialized_self[2] 
+        self.input_to_hidden_weights = serialized_self[0]
+        self.input_to_hidden_biases = serialized_self[1]
+        self.hidden_to_output_weights = serialized_self[2]
         self.hidden_to_output_bias = serialized_self[3]
 
 

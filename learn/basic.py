@@ -1,5 +1,5 @@
 class BasePlayer(object):
-    def move(self, is_black_turn, board_list):
+    def move(self, is_black_turn, roll, current_board, board_list):
         raise NotImplementedError('move() not implemented')
 
     def learn(self):

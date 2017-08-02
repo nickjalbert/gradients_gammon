@@ -6,7 +6,7 @@ class RandomMover(BaseMoveTracker, BasePlayer):
     def __init__(self):
         self.reset_move_tracking()
 
-    def move(self, is_black_turn, board_list):
+    def move(self, is_black_turn, roll, current_board, board_list):
         return random.choice(range(len(board_list)))
 
     def learn(self):

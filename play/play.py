@@ -59,9 +59,9 @@ def play_game(black, white):
         roll = roll_dice()
         boards = generate_next_boards(board, is_black_turn, roll)
         if is_black_turn:
-            board_index = black.move(is_black_turn, boards)
+            board_index = black.move(is_black_turn, roll, board, boards)
         else: 
-            board_index = white.move(is_black_turn, boards)
+            board_index = white.move(is_black_turn, roll, board, boards)
         board = boards[board_index]
         black.save_move(is_black_turn, board)
         white.save_move(is_black_turn, board)

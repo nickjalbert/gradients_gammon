@@ -69,7 +69,7 @@ class NeuralNetMover(BaseMoveTracker, BasePlayer):
         self.hidden_to_output_weights = output_weights
         self.hidden_to_output_bias = small_random()
 
-    def move(self, is_black_turn, board_list):
+    def move(self, is_black_turn, roll, current_board, board_list):
         if is_black_turn:
             board_list = [swap_colors(board) for board in board_list]
         outputs = [self.feed_forward(board) for board in board_list]
@@ -275,6 +275,12 @@ class DumbNeuralNetMover(NeuralNetMover):
     def learn(self):
         self.assert_moves_were_tracked()
         self.reset_move_tracking()
+
+    def move(self, is_black_turn, roll, current_board, board_list):
+        if is_black_turn:
+            board_list = [swap_colors(board) for board in board_list]
+        outputs = [self.feed_forward(board) for board in board_list]
+        return max(enumerate(outputs), key=lambda x: x[1])[0]
 
     def save_state(self, path):
         pass

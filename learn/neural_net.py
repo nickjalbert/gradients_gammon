@@ -6,6 +6,9 @@ from itertools import chain
 from learn.basic import BaseMoveTracker, BasePlayer
 from backgammon.utility import swap_colors
 
+# TODO
+# * Make sure I'm doing the board color swapping correctly
+
 
 '''
 Questions:

@@ -1,6 +1,8 @@
 '''
-Pits the random mover against a trained neural net and reports 99% confidence
+Pits a trained neural net against a random mover and reports 99% confidence
 interval of true win rate of the neural net.
+
+Pass in path to the NN state pickle.
 '''
 
 import os
@@ -24,8 +26,7 @@ if __name__ == '__main__':
     else:
         print 'Pickle file not found...'
         sys.exit(0)
-    #total_games = 1024
-    total_games = 10
+    total_games = 1024
     black_wins = play_games(total_games, black, white)
     white_wins = total_games - black_wins
     nn_desc = 'the NN Mover ({})'.format(load_path)

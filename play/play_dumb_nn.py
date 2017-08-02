@@ -24,7 +24,7 @@ if __name__ == '__main__':
     else:
         print 'Pickle file not found...'
         sys.exit(0)
-    total_games = 100
+    total_games = 1024
     black_wins = play_games(total_games, black, white)
     Z = 2.5759
     E = Z/(2*(total_games)**.5)

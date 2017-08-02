@@ -26,8 +26,8 @@ def play_games(count, black, white):
         black_wins += 1 if black_won else 0
         white_wins += 0 if black_won else 1
         if i % 100 == 99:
-            black.save_state(BLACK_SAVE_PATH.format(i+401))
-            white.save_state(WHITE_SAVE_PATH.format(i+401))
+            black.save_state(BLACK_SAVE_PATH.format(i+1))
+            white.save_state(WHITE_SAVE_PATH.format(i+1))
         if i % 10 == 9 or i == 0:
             elapsed_time = time.time() - start_time
             report_game_rate(i+1, elapsed_time)

@@ -1,3 +1,7 @@
+'''
+Extremely basic implementation of a neural network.  Inefficient and naive
+but will provide a template for future work.
+'''
 import math
 import random
 import pickle
@@ -5,9 +9,6 @@ from itertools import chain
 
 from learn.basic import BaseMoveTracker, BasePlayer
 from backgammon.utility import swap_colors
-
-# TODO
-# * Make sure I'm doing the board color swapping correctly
 
 
 '''
@@ -49,6 +50,22 @@ class NeuralNetMover(BaseMoveTracker, BasePlayer):
     
     Uses numerical gradients which will be inefficient but (hopefully)
     explicit.
+
+    TODO:
+        * Analytic gradients
+        * Use a cross-entropy function for cost; choose the highest cost board
+          (or still use roulette select?)
+        * Regularize cost function
+        * Train s.t. losing boards push activation toward zero and winning
+          boards push activation toward 1
+        * Play against neural network opponent to learn against stronger
+          strategies
+        * Numpy for efficiency, then keras and/or tensorflow
+        * Smarter weight initialization
+        * Batch training vs online training?
+        * Other hyper parameter tuning (regularization constant, learning rate)
+        * Different network architectures
+        * Optimize backgammon board generation
     '''
     def __init__(self):
         self.reset_move_tracking()

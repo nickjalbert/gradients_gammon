@@ -31,9 +31,9 @@ def play_games(count, black, white):
                     i+1, elapsed_time, (i+1)/elapsed_time)
 
     print
-    print 'Black wins: {0} {1:.2f}%'.format(
+    print 'Black wins: {0} ({1:.2f}%)'.format(
             black_wins, float(black_wins)*100/count)
-    print 'White wins: {0} {1:.2f}%'.format(
+    print 'White wins: {0} ({1:.2f}%)'.format(
             white_wins, float(white_wins)*100/count)
     elapsed_time = time.time() - start_time
     game_rate = count/elapsed_time
@@ -43,6 +43,7 @@ def play_games(count, black, white):
         description = "seconds per game"
     print 'Total runtime: {0:.2f} sec ({1:.2f} {2})'.format(
             elapsed_time, game_rate, description)
+    return black_wins
 
 
 def play_game(black, white):

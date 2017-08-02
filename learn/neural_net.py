@@ -20,6 +20,8 @@ Questions:
 
     * Should we use rectified neurons or sigmoid activiations functions for
       the hidden layer?  What are the trade-offs?
+
+    * How do we determine a good shape for the network?
 '''
 
 class NeuralNetMover(BaseMoveTracker, BasePlayer):

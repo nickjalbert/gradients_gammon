@@ -53,3 +53,6 @@ The results are as follows:
   beats a player making random moves between 89.6% and 97.7% of the time
   (99% CI).
 
+* After training on 10400 games, the naive neural net
+  beats a player making random moves between 91.5% and 99.5% of the time
+  (99% CI).

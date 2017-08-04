@@ -6,6 +6,14 @@ ideas related to the
 and the deep neural network extensions discussed by
 Andrej Karpathy [here](http://karpathy.github.io/2016/05/31/rl/).
 
+### Setup
+
+This is a Python 2.7 project.  It uses the scipy stack that can be installed as follows:
+
+```pip install --user numpy scipy matplotlib ipython jupyter pandas sympy nose```
+
+See also ```requirements.txt```.
+
 
 ### Results
 
